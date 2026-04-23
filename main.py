@@ -1,53 +1,55 @@
-from utils import slow_print, divider, select_difficulty, banner
+from utils import slow_print, select_difficulty, banner
 from challenges import password_crack, cipher_challenge, log_analysis_challenge
 
 
-def show_intro():
-    banner()
-    slow_print("Welcome, Agent.")
-    slow_print("You have been assigned a mission to test system security.\n")
+class Game:
+    def __init__(self):
+        self.score = 0
+        self.difficulty = None
 
+    def show_intro(self):
+        banner()
+        slow_print("Welcome, Agent.")
+        slow_print("You have been assigned a mission to test system security.\n")
 
-def play_game():
-    score = 0
+    def setup(self):
+        self.show_intro()
+        self.difficulty = select_difficulty()
 
-    show_intro()
-    difficulty = select_difficulty()
+    def run_mission(self, mission_func, mission_name):
+        slow_print(f"\n[{mission_name}]")
 
-    # ---- MISSION 1 ----
-    slow_print("\n[MISSION 1]")
-    slow_print("Target: SecureCorp Server")
-    slow_print("Objective: Crack the login password\n")
+        result = mission_func(self.difficulty)
 
-    if password_crack(difficulty):
-        score += 10
-        slow_print("Mission 1 Completed!\n")
-    else:
-        slow_print("Mission Failed!")
-        return score
+        if result:
+            self.score += 10
+            slow_print(f"{mission_name} Completed!\n")
+            return True
+        else:
+            slow_print("Mission Failed!")
+            return False
 
-    # ---- MISSION 2 ----
-    if cipher_challenge(difficulty):
-        score += 10
-        slow_print("Mission 2 Completed!\n")
-    else:
-        slow_print("Mission Failed!")
-        return score
+    def play(self):
+        self.setup()
 
-    # ---- MISSION 3 ----
-    if log_analysis_challenge(difficulty):
-        score += 10
-        slow_print("Mission 3 Completed!\n")
-    else:
-        slow_print("Mission Failed!")
-        return score
+        # Mission 1
+        if not self.run_mission(password_crack, "MISSION 1"):
+            return self.score
 
-    # ---- FINAL RESULT ----
-    slow_print(f"\nFinal Score: {score}/30")
-    slow_print("All Missions Completed!")
-    slow_print("You are a certified cyber agent.\n")
+        # Mission 2
+        if not self.run_mission(cipher_challenge, "MISSION 2"):
+            return self.score
 
-    return score
+        # Mission 3
+        if not self.run_mission(log_analysis_challenge, "MISSION 3"):
+            return self.score
+
+        # Final result
+        slow_print(f"\nFinal Score: {self.score}/30")
+        slow_print("All Missions Completed!")
+        slow_print("You are a certified cyber agent.\n")
+
+        return self.score
 
 
 def play_again():
@@ -57,7 +59,9 @@ def play_again():
 
 def main():
     while True:
-        play_game()
+        game = Game()   # 🔥 Object created here
+        game.play()
+
         if not play_again():
             slow_print("Exiting game...")
             break
