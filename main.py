@@ -1,14 +1,13 @@
 def show_intro():
-    print("=" * 30)
-    print(" HACKER TERMINAL v1.0 ")
-    print("=" * 30)
+    print("=" * 35)
+    print("     HACKER TERMINAL v1.0     ")
+    print("=" * 35)
     print("Welcome, Agent.")
-    print("Your mission is to breach secure systems.\n")
+    print("You have been assigned a mission to test system security.\n")
 
 
 def main():
     show_intro()
-    print("Game starting...\n")
 
 
 if __name__ == "__main__":
