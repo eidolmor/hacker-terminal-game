@@ -155,3 +155,92 @@ def cipher_challenge(difficulty):
 
     slow_print("Decryption Failed!\n")
     return False
+
+def log_analysis_challenge(difficulty):
+    import random
+    from utils import slow_print
+
+    users = ["admin", "guest", "root", "user1", "dev", "tester"]
+    ips = [
+        "192.168.1.10",
+        "192.168.1.23",
+        "192.168.1.45",
+        "10.0.0.5",
+        "172.16.0.2"
+    ]
+
+    suspicious_ip = random.choice(ips)
+    suspicious_user = random.choice(users)
+
+    logs = []
+
+    # 🔹 Generate realistic mixed logs
+    actions = ["logged in", "logged out", "accessed file", "changed settings"]
+
+    for _ in range(8):  # more normal logs
+        user = random.choice(users)
+        action = random.choice(actions)
+        logs.append(f"User {user} {action}")
+
+    # 🔹 Suspicious behavior patterns
+    for _ in range(random.randint(2, 4)):
+        logs.append(f"User {suspicious_user} failed login")
+
+    for _ in range(random.randint(2, 4)):
+        logs.append(f"IP {suspicious_ip} multiple requests detected")
+
+    # 🔹 Noise logs
+    for _ in range(3):
+        logs.append(f"IP {random.choice(ips)} ping success")
+
+    random.shuffle(logs)
+
+    # Difficulty
+    if difficulty == "easy":
+        attempts = 3
+        hints_available = 2
+    elif difficulty == "medium":
+        attempts = 2
+        hints_available = 1
+    else:
+        attempts = 1
+        hints_available = 0
+
+    slow_print("\n[MISSION 3: LOG ANALYSIS]")
+    slow_print("Identify the suspicious USER or IP.\n")
+
+    for log in logs:
+        print(log)
+
+    # ✅ Better hints (no useless ones)
+    hints = [
+        f"Suspicious user starts with '{suspicious_user[0]}'",
+        f"Suspicious IP starts with {suspicious_ip.split('.')[0]}",
+        "Look for repeated failed login attempts",
+        "Look for unusual high-frequency IP activity"
+    ]
+
+    random.shuffle(hints)
+    hint_index = 0
+
+    while attempts > 0:
+        answer = input("\n>> Enter suspicious user or IP (or type 'hint'): ").lower()
+
+        if answer == "hint":
+            if hints_available > 0 and hint_index < len(hints):
+                slow_print(f"Hint: {hints[hint_index]}")
+                hint_index += 1
+                hints_available -= 1
+            else:
+                slow_print("No hints remaining!")
+            continue
+
+        if answer == suspicious_user.lower() or answer == suspicious_ip.lower():
+            slow_print("Correct Analysis!\n")
+            return True
+        else:
+            attempts -= 1
+            slow_print(f"Incorrect! Attempts left: {attempts}")
+
+    slow_print("Analysis Failed!\n")
+    return False
