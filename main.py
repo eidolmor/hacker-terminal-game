@@ -1,6 +1,5 @@
 from utils import slow_print, divider, select_difficulty
-from challenges import password_crack
-
+from challenges import password_crack, cipher_challenge
 
 def show_intro():
     divider()
@@ -15,11 +14,24 @@ def main():
 
     difficulty = select_difficulty()
 
+    # ---- MISSION 1 ----
     slow_print("\n[MISSION 1]")
     slow_print("Target: SecureCorp Server")
     slow_print("Objective: Crack the login password\n")
 
     result = password_crack(difficulty)
+
+    if not result:
+        slow_print("Mission Failed!")
+        return
+
+    # ---- MISSION 2 ----
+    result = cipher_challenge(difficulty)
+
+    if not result:
+        slow_print("Mission Failed!")
+    else:
+        slow_print("All Missions Completed!")
 
     if result:
         slow_print("Mission Completed!")
